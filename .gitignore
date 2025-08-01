@@ -137,3 +137,22 @@ logs/
 # Project specific excludes
 IMPROVEMENTS_COMPLETE.md
 PROJECT_COMPLETE.md
+
+# README files (excluding from commit)
+README.md
+README_NEW.md
+COMPLETE_PLATFORM_README.md
+INTEGRATION_COMPLETE.md
+MFI_PLATFORM_IMPROVEMENTS.md
+*.md
+
+# Audio files (generated outputs)
+*.mp3
+*.wav
+
+# Large model files
+*.pkl
+*.joblib
+
+# Knowledge base files (will be regenerated)
+shared_data/knowledge_base.json

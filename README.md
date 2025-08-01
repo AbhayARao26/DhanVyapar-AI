@@ -1,53 +1,270 @@
-# 🏦 Microfinance Agents System
+# 🏦 GramSetuAI - Complete Microfinance Platform
 
-A comprehensive microfinance system with AI-powered agents for user onboarding, credit scoring, loan recommendations, and financial education. Built with GROQ API and multilingual support for rural Karnataka.
+A comprehensive microfinance ecosystem with separate platforms for borrowers and MFIs (Microfinance Institutions), featuring AI-powered agents, loan management, and real-time analytics.
 
-**🆕 Latest Updates:**
-- ✅ **ElevenLabs replaced with gTTS** - Free, open-source text-to-speech
-- ✅ **Enhanced multilingual support** - Automatic translation between English, Hindi, Kannada
-- ✅ **Improved credit scoring** - Accurate data completeness validation and scoring explanations
-- ✅ **Deterministic AI responses** - Temperature=0 for consistent outputs
-- ✅ **Standardized user data schema** - 37 comprehensive fields for complete profiling
-
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.8+
 - GROQ API key (free at [console.groq.com](https://console.groq.com/))
-- AssemblyAI API key (optional, for speech features)
 
 ### Installation
 ```bash
-# Clone the repository
-git clone https://github.com/TEJASKUMAR-REDDY-J/GramSetuAI.git
-cd GramSetuAI
-
 # Install dependencies
 pip install -r requirements.txt
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env file and add your API keys
-```
-
-### Environment Setup
-Create a `.env` file with your API keys:
-```bash
+# Set up environment variables (create .env file)
 GROQ_API_KEY=your_groq_api_key_here
-ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here
+MODEL_NAME=meta-llama/llama-3.2-90b-text-preview
 ```
 
-### Launch Gradio Interface
+### Launch Options
+
+#### Option 1: Launch Complete Platform (Recommended)
 ```bash
-python gradio_app.py
+python app.py
+```
+This launches both platforms:
+- **Borrower Platform**: http://localhost:7861
+- **MFI Platform**: http://localhost:7862
+
+#### Option 2: Launch Individual Platforms
+```bash
+# Borrower platform only
+cd borrower_platform
+python borrower_app.py
+
+# MFI platform only  
+cd microfinance_platform
+python mfi_app.py
 ```
 
-Open your browser to `http://localhost:7861`
+## 🏗️ Platform Architecture
 
-## 📋 Features
+### 📱 Borrower Platform (Port 7861)
+**For individual borrowers seeking loans**
 
-### 👤 User Management
-- Create new user profiles
+**Features:**
+- 🔐 **User Registration & Login** - Create borrower profiles
+- 📄 **Loan Applications** - Apply for various loan types
+- 🎯 **AI Credit Scoring** - Instant creditworthiness assessment
+- 🏛️ **MFI Recommendations** - Find suitable lenders
+- 💰 **EMI Tracking** - Monitor loan payments
+- 🎤 **Voice Assistant** - Multi-language support (Hindi, Kannada, English)
+- 📚 **Financial Education** - Learn about loan management
+- 📱 **WhatsApp Integration** - Get updates via WhatsApp
+
+**AI Agents:**
+- **User Onboarding Agent** - Guides new users through registration
+- **Credit Scoring Agent** - Analyzes creditworthiness in real-time
+- **Document Processing Agent** - Extracts data from uploaded documents
+- **Lender Recommendation Agent** - Matches borrowers with suitable MFIs
+- **Educational Content Agent** - Provides financial literacy content
+- **Voice Assistant Agent** - Handles voice queries in multiple languages
+
+### 🏢 MFI Platform (Port 7862)
+**For Microfinance Institutions managing loans**
+
+**Features:**
+- 🔐 **MFI Authentication** - Dropdown-based login (no passwords needed)
+- 📊 **Dashboard** - Portfolio overview and key metrics
+- 📋 **Loan Management** - Review, approve, and reject applications
+- 📈 **AI Analytics** - Risk assessment and forecasting
+- 💼 **Portfolio Tracking** - Monitor active loans and EMI collections
+- 🎤 **Voice Assistant** - Query portfolio performance
+
+**AI Analytics Agents:**
+- **CreditSense Analyst** - Deep credit intelligence & risk analysis
+- **FundFlow Forecaster** - Cashflow and portfolio health forecasting
+- **PolicyPulse Advisor** - Compliance and government scheme updates
+- **OpsGenie Agent** - Operational insights and field officer tracking
+
+## 📋 Step-by-Step Usage
+
+### For Borrowers:
+
+1. **Registration**
+   - Visit http://localhost:7861
+   - Go to "User Registration" tab
+   - Fill in personal details, income, and loan requirements
+   - Submit to create your profile
+
+2. **Apply for Loan**
+   - Go to "Loan Application" tab
+   - Fill loan details (amount, purpose, tenure)
+   - Upload documents if required
+   - Submit application
+
+3. **Check Credit Score**
+   - Use "Credit Scoring" tab
+   - Get instant AI-powered creditworthiness assessment
+   - View detailed scoring explanation
+
+4. **Find Lenders**
+   - Visit "Lender Recommendations" tab
+   - Get matched with suitable MFIs
+   - View MFI details and contact information
+
+5. **Track EMI Payments**
+   - Go to "EMI Tracking" tab
+   - View payment schedule and history
+   - Make payments and update status
+
+### For MFIs:
+
+1. **Login**
+   - Visit http://localhost:7862
+   - Go to "Authentication" tab
+   - Select your MFI from dropdown
+   - Click "Login to Dashboard"
+
+2. **Review Applications**
+   - Go to "Loan Management" → "Pending Applications"
+   - Click "Refresh Applications" to load latest applications
+   - Review borrower details and credit scores
+
+3. **Approve/Reject Loans**
+   - Go to "Approve Loan" tab
+   - Select application from dropdown (auto-fills details)
+   - Modify loan amount, tenure (3-60 months), interest rate
+   - Add comments and click "Approve Loan"
+   - For rejections, use "Reject Application" tab
+
+4. **Monitor Portfolio**
+   - Visit "Portfolio Overview" tab
+   - View active loans, collection rates, and outstanding amounts
+   - Track EMI payment status
+
+5. **Use AI Analytics**
+   - **CreditSense**: Analyze portfolio risk and borrower performance
+   - **FundFlow**: Get cashflow forecasts and portfolio health insights
+   - **PolicyPulse**: Stay updated on compliance and government schemes
+
+## 🔧 Key Features
+
+### Loan Approval Workflow
+1. Borrower submits application on borrower platform
+2. Application appears in MFI platform under "Pending Applications"
+3. MFI reviews credit analysis and borrower profile
+4. MFI can modify loan terms (amount, tenure, interest rate)
+5. Upon approval, EMI schedule is automatically created
+6. Borrower gets notified and can track EMI payments
+
+### Auto-Fill Functionality
+- When MFI selects an application, loan details auto-populate
+- Requested amount, tenure, and purpose are filled automatically
+- MFI can modify any terms before approval
+
+### Real-Time Updates
+- Applications sync instantly between platforms
+- EMI tracking updates in real-time
+- Portfolio metrics refresh automatically
+
+## 🗂️ Database Structure
+
+### Shared Data Directory
+```
+shared_data/
+├── loan_applications.json    # All loan applications
+├── emi_tracking.json        # EMI payment tracking
+├── mfi_directory.json       # MFI profiles and details
+└── loan_database.py         # Database management
+```
+
+### Sample MFI Directory
+The platform comes pre-configured with test MFIs:
+- **Grameen Bank Karnataka** (GRAMEEN_BANK_KA)
+- **Bandhan Microfinance** (BANDHAN_MF)
+- **Spandana Microfinance** (SPANDANA_MF)
+- **Ujjivan Small Finance Bank** (UJJIVAN_SFB)
+
+## 🔬 Testing the Platform
+
+### Test Scenario:
+1. **Create Borrower Profile** (Port 7861)
+   - Name: John Doe
+   - Phone: 9876543210
+   - Income: ₹25,000/month
+   - Loan Amount: ₹50,000
+
+2. **Submit Loan Application**
+   - Purpose: Business expansion
+   - Tenure: 12 months
+
+3. **MFI Login** (Port 7862)
+   - Select "Grameen Bank Karnataka"
+   - Go to Loan Management
+
+4. **Review & Approve**
+   - Click "Refresh Applications"
+   - Select application from dropdown
+   - Modify terms if needed
+   - Approve loan
+
+5. **Verify EMI Creation**
+   - Check "Portfolio Overview"
+   - Verify EMI tracking on borrower platform
+
+## 🛠️ Troubleshooting
+
+### Common Issues:
+
+1. **"Application not in list" Error**
+   - Click "Refresh Applications" first
+   - Ensure you're logged in to the correct MFI
+   - Check if applications exist for your MFI
+
+2. **Dropdown Empty**
+   - Verify borrower has submitted applications
+   - Check if applications are in "pending" status
+   - Refresh the applications list
+
+3. **Platform Not Loading**
+   - Check if both platforms are running
+   - Verify ports 7861 and 7862 are available
+   - Check GROQ API key in .env file
+
+### Debug Mode:
+Add `debug=True` in the launch parameters for detailed error logs.
+
+## 📚 API Documentation
+
+### Environment Variables:
+```bash
+GROQ_API_KEY=your_groq_api_key          # Required
+MODEL_NAME=meta-llama/llama-3.2-90b-text-preview  # Optional
+```
+
+### Database Methods:
+- `loan_db.get_applications_for_mfi(mfi_id)` - Get applications for specific MFI
+- `loan_db.approve_loan(app_id, approval_data)` - Approve loan application
+- `loan_db.reject_loan(app_id, reason)` - Reject loan application
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For issues and questions:
+1. Check troubleshooting section above
+2. Review error logs in terminal
+3. Ensure all dependencies are installed
+4. Verify API keys are correctly set
+
+---
+
+**🎯 Ready to test? Run `python app.py` and access:**
+- **Borrowers**: http://localhost:7861
+- **MFIs**: http://localhost:7862
 - Select existing users
 - Complete user dashboards with profile completeness tracking
 

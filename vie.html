@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Universe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #00001a;
+        }
+        #info-modal, #intro-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Canvas for the 3D scene -->
+    <canvas id="bg"></canvas>
+
+    <!-- Introductory Overlay -->
+    <div id="intro-overlay" class="absolute inset-0 z-20 flex items-center justify-center text-white text-center p-8">
+        <div class="max-w-2xl">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="font-family: 'Playfair Display', serif;">Our Universe</h1>
+            <p class="text-lg md:text-xl mb-8">For my amazing girlfriend on our 15th Month Anniversary & International Girlfriend's Day. Here's to the stars we've collected together. Navigate our sky of memories.</p>
+            <button id="enter-btn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-3 px-6 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg transition-transform transform hover:scale-105">
+                Enter Our World
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal to display memory details -->
+    <div id="info-modal" class="hidden absolute z-30 inset-0 items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-2xl shadow-2xl text-white overflow-hidden border border-gray-700">
+            <div class="p-6 md:p-8">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="modal-title" class="text-2xl md:text-3xl font-bold mb-1" style="font-family: 'Playfair Display', serif;"></h2>
+                        <p id="modal-date" class="text-sm text-blue-300 mb-4"></p>
+                    </div>
+                    <button id="close-modal-btn" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+                </div>
+                <img id="modal-image" src="" alt="Memory Image" class="w-full h-64 object-cover rounded-lg mb-4 border-2 border-gray-600" onerror="this.onerror=null;this.src='https://placehold.co/600x400/00001a/ffffff?text=Our+Memory';">
+                <p id="modal-note" class="text-base"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =================================================================
+        // CUSTOMIZE YOUR MEMORIES HERE
+        // =================================================================
+        const memories = [
+        {
+            title: "Our First Picture!",
+            date: "May 1, 2024",
+            note: "This was our first pic after getting into the relationship. Omggg! It marks the best day of my life when youuuu, such a wonderful girl, came into my life to make me the happiest❤️ PS: Look at that smile😍 Gosh.... No wonder I fall for it every single day and I will forever!",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//Screenshot%202024-05-01%20at%2011.08.13%20PM.JPG"
+        },
+        {
+            title: "Our First UmmHmm Day!😜",
+            date: "May 11, 2024",
+            note: "Omgggg! We're so wild that in just 10 days, we literally couldn't wait to feel each other and enjoy each other's touch🥵😈 I can never forget the feeling of holding Olive and Cherry in my hand for the first time🤭",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//IMG_3124.JPG"
+        },
+        {
+            title: "Our First Room and IFYKYK! 😈",
+            date: "July 9, 2024",
+            note: "Oh godd!! Can never forget this day ever🥵 To see u that way, to feel u that way, to do you that way😈 Our first was honestly one of the best start to what we have rn in terms of naughty days😜 I just fucking loveeee youuuu so much and those words interchanged🥵 (hehe)",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//88FD5617-D39A-4F4F-8100-F169EF4B5381.JPG"
+        },
+        {
+            title: "Our First Long Drive!",
+            date: "July 18, 2024",
+            note: "This was such a cute day!🥰 Going till there in the rain getting all wet😂 Sitting on that rock there and looking into each other eyes and falling in love more and more with each passing second❤️ This is a moment I cherish a lot princess😘",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//29C440D3-B57C-44DA-B00E-9888549D5A47.JPG"
+        },
+        {
+            title: "Our First Garbha Night!",
+            date: "October 4, 2024",
+            note: "Omggg!! The number of ups and downs on this day🤪 From Yogi chikkappa's call to me running out of the house to us going and having the best time there🥰 What a day!! This day made me realise I'd subconsciously chosen u over everything else and I will forever continue to do so🥰🥰❤️❤️",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//B4218EB5-8F8C-4A10-BE07-FE3728215FBE.JPG"
+        },
+        {
+            title: "Our First Restaurant Pic!",
+            date: "October 14, 2024",
+            note: "You remember this day, don't you!? The first time u saw my new phone too🥰... I love how you were testing out cameras and stuff while being sooo goofy❤️🤪 My cuteeeee lil girl fr😘",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//IMG_0059.jpeg"
+        },
+        {
+            title: "Our First Trek Together!",
+            date: "March 23, 2025",
+            note: "Omgggg!! After so much planning, finally this day came to be 🥰 I had the best time with u, holding ur hand, teaching u to climb, driving around with u and spending the longest time we've ever spent together❤️😍 It was easily one of the best dates we've had",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//IMG_2517.JPG"
+        },
+        {
+            title: "You're my everything kandammi!",
+            date: "Always and Forever",
+            note: "My sweetu 💖 my cupcake 🧁 my muddubangari 💛 my Poovy 🥺 my cutuuu 🐣 my Vie Vie 🌸 my Bubu 🐻 — you’re my everything, my whole heart, my forever person 🌍💫 No matter what, I’ll always be by your side 🤝 through all the laughs, the tears, the silly fights 😅 and the warm hugs 🫂 I’m so lucky to have you, and I promise I’ll love you more and more every day 💗💗 You and me — always, forever, no matter what 🥹💍💐 I love you more than words can say, my jaan 💕✨",
+            imageUrl: "https://axydqfvlwsmliropozcg.supabase.co/storage/v1/object/public/memories_images//IMG_2326.jpeg"
+        }
+        ];
+
+        // =================================================================
+        // SCENE SETUP (No need to edit below this line)
+        // =================================================================
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg'), antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        camera.position.set(0, 0, 80);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 10;
+        controls.maxDistance = 200;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+        
+        const textureLoader = new THREE.TextureLoader();
+        const starTexture = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/disc.png');
+
+        // --- Background Starfield ---
+        const starVertices = [];
+        for (let i = 0; i < 20000; i++) { // More stars for a denser feel
+            const x = THREE.MathUtils.randFloatSpread(2000);
+            const y = THREE.MathUtils.randFloatSpread(2000);
+            const z = THREE.MathUtils.randFloatSpread(2000);
+            starVertices.push(x, y, z);
+        }
+        const starGeometry = new THREE.BufferGeometry();
+        starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.7 });
+        const starfield = new THREE.Points(starGeometry, starMaterial);
+        scene.add(starfield);
+
+        // --- Faint Background Constellations ---
+        for (let i = 0; i < 40; i++) { // Create 40 faint constellations
+            const center = new THREE.Vector3(
+                    THREE.MathUtils.randFloatSpread(2),
+                    THREE.MathUtils.randFloatSpread(2),
+                    THREE.MathUtils.randFloatSpread(2)
+                )
+                .normalize() // Get a random point on a unit sphere
+                .multiplyScalar(THREE.MathUtils.randFloat(150, 300)); // Place it far away
+
+            const numStars = Math.floor(Math.random() * 8) + 5; // 5 to 12 stars per constellation
+            const group = new THREE.Group();
+            const points = [];
+            const bgStarMaterial = new THREE.SpriteMaterial({
+                map: starTexture, color: 0xaaaaaa, alphaMap: starTexture,
+                transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending,
+            });
+
+            for (let j = 0; j < numStars; j++) {
+                const pos = new THREE.Vector3(
+                    center.x + THREE.MathUtils.randFloatSpread(30),
+                    center.y + THREE.MathUtils.randFloatSpread(30),
+                    center.z + THREE.MathUtils.randFloatSpread(30)
+                );
+                const star = new THREE.Sprite(bgStarMaterial.clone());
+                star.scale.set(0.7, 0.7, 1);
+                star.position.copy(pos);
+                group.add(star);
+                points.push(pos);
+            }
+
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints(points.sort(() => 0.5 - Math.random()).slice(0, numStars / 2));
+            const lineMaterial = new THREE.LineBasicMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.08 });
+            group.add(new THREE.Line(lineGeometry, lineMaterial));
+            scene.add(group);
+        }
+
+        // --- Main Constellations (POOBHAY) ---
+        const letterShapes = {
+            'P': [ {x:0,y:0},{x:0,y:1},{x:0,y:2},{x:0,y:3},{x:0,y:4},{x:1,y:4},{x:2,y:3},{x:1,y:2},{x:0,y:2} ],
+            'O': [ {x:0,y:0},{x:1,y:0},{x:2,y:1},{x:2,y:2},{x:1,y:3},{x:0,y:3},{x:-1,y:2},{x:-1,y:1},{x:0,y:0} ],
+            'B': [ {x:0,y:0},{x:0,y:1},{x:0,y:2},{x:0,y:3},{x:0,y:4},{x:1,y:4},{x:1.5,y:3.5},{x:1,y:3},{x:0,y:2},{x:1,y:2},{x:1.5,y:0.5},{x:1,y:0},{x:0,y:0} ],
+            'H': [ {x:-1,y:0},{x:-1,y:1},{x:-1,y:2},{x:-1,y:3},{x:-1,y:4},{x:-1,y:2},{x:1,y:2},{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:1,y:3},{x:1,y:4} ],
+            'A': [ {x:-2,y:0},{x:-1,y:2},{x:0,y:4},{x:1,y:2},{x:2,y:0},{x:1,y:2},{x:-1,y:2} ],
+            'Y': [ {x:0,y:0},{x:0,y:1},{x:0,y:2},{x:-1,y:3},{x:-2,y:4},{x:0,y:2},{x:1,y:3},{x:2,y:4} ]
+        };
+        const letterData = [
+            { letter: 'P', memoryIndex: 0, offset: { x: -45, y: 0, z: 0 } },
+            { letter: 'O', memoryIndex: 1, offset: { x: -30, y: 0, z: 0 } },
+            { letter: 'O', memoryIndex: 2, offset: { x: -15, y: 0, z: 0 } },
+            { letter: 'B', memoryIndex: 3, offset: { x: 0, y: 0, z: 0 } },
+            { letter: 'H', memoryIndex: 4, offset: { x: 15, y: 0, z: 0 } },
+            { letter: 'A', memoryIndex: 5, offset: { x: 30, y: 0, z: 0 } },
+            { letter: 'Y', memoryIndex: 6, offset: { x: 45, y: 0, z: 0 } },
+        ];
+        
+        const constellationGroup = new THREE.Group();
+        const clickableStars = [];
+
+        function createStar(isMemoryStar, position, memoryData = {}) {
+            const material = new THREE.SpriteMaterial({
+                map: starTexture,
+                color: isMemoryStar ? 0x87CEFA : 0xffffff, // LightSkyBlue for memory stars
+                alphaMap: starTexture,
+                transparent: true,
+                opacity: isMemoryStar ? 1.0 : 0.9,
+                blending: THREE.AdditiveBlending,
+            });
+            const sprite = new THREE.Sprite(material);
+            const scale = isMemoryStar ? 2.5 : 1.2;
+            sprite.scale.set(scale, scale, 1);
+            sprite.position.copy(position);
+            if (isMemoryStar) {
+                sprite.userData = memoryData;
+            }
+            return sprite;
+        }
+
+        letterData.forEach(data => {
+            const memory = memories[data.memoryIndex];
+            const shapePoints = letterShapes[data.letter];
+            const offset = data.offset;
+            
+            const memoryStarPosition = new THREE.Vector3(offset.x, offset.y, offset.z);
+            const memoryStar = createStar(true, memoryStarPosition, { id: data.memoryIndex, ...memory });
+            constellationGroup.add(memoryStar);
+clickableStars.push(memoryStar);
+
+            const linePoints = [];
+            shapePoints.forEach(point => {
+                const fillerStarPos = new THREE.Vector3(
+                    offset.x + point.x * 2.5,
+                    offset.y + point.y * 2.5,
+                    offset.z + THREE.MathUtils.randFloatSpread(5)
+                );
+                const fillerStar = createStar(false, fillerStarPos);
+                constellationGroup.add(fillerStar);
+                linePoints.push(fillerStarPos);
+            });
+            
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xffffff, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending
+            });
+            constellationGroup.add(new THREE.Line(lineGeometry, lineMaterial));
+        });
+
+        const specialMemory = memories[7];
+        const specialStarPosition = new THREE.Vector3(0, -25, 0);
+        const specialStar = createStar(true, specialStarPosition, { id: 7, ...specialMemory });
+        specialStar.scale.set(3.0, 3.0, 1);
+        constellationGroup.add(specialStar);
+        clickableStars.push(specialStar);
+
+        scene.add(constellationGroup);
+
+        // --- Interactivity & UI ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onStarClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(clickableStars);
+
+            if (intersects.length > 0) {
+                showModal(intersects[0].object.userData);
+            }
+        }
+        window.addEventListener('click', onStarClick);
+        
+        const modal = document.getElementById('info-modal');
+        const introOverlay = document.getElementById('intro-overlay');
+        const enterBtn = document.getElementById('enter-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDate = document.getElementById('modal-date');
+        const modalImage = document.getElementById('modal-image');
+        const modalNote = document.getElementById('modal-note');
+
+        function showModal(data) {
+            modalTitle.textContent = data.title;
+            modalDate.textContent = data.date;
+            modalImage.src = data.imageUrl;
+            modalNote.textContent = data.note;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        enterBtn.addEventListener('click', () => {
+            introOverlay.style.transition = 'opacity 1s ease-out';
+            introOverlay.style.opacity = '0';
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+            }, 1000);
+        });
+
+        closeModalBtn.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) hideModal();
+        });
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            
+            const time = Date.now() * 0.001;
+            clickableStars.forEach(star => {
+                const pulse = Math.sin(time * 1.5 + star.userData.id) * 0.2;
+                star.material.opacity = 0.8 + pulse;
+                if (star.userData.baseScale) {
+                    star.scale.x = star.userData.baseScale.x + pulse * 0.3;
+                    star.scale.y = star.userData.baseScale.y + pulse * 0.3;
+                }
+            });
+
+            starfield.rotation.y += 0.0001;
+            constellationGroup.rotation.y += 0.0003;
+
+            renderer.render(scene, camera);
+        }
+
+        clickableStars.forEach(star => {
+            star.userData.baseScale = {x: star.scale.x, y: star.scale.y};
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
