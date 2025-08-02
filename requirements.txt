@@ -1,8 +1,24 @@
+# Core dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
+
+# AI and ML dependencies
 groq>=0.30.0
 requests==2.31.0
-pydantic==2.5.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Image and document processing
 pillow==10.1.0
+
+# Web framework
 gradio>=4.0.0
+
+# Geospatial and mapping
 geopy>=2.4.1
 folium>=0.20.0
 
@@ -12,13 +28,7 @@ gtts>=2.3.0
 pygame>=2.0.0  # For audio playback support
 
 # Environment management
-python-dotenv>=1.0.00
-requests==2.31.0
-pydantic==2.5.0
-pillow==10.1.0
-gradio>=4.0.0
+python-dotenv>=1.0.0
 
-# Voice processing dependencies
-assemblyai>=0.21.0
-gtts>=2.3.0
-pygame>=2.0.0  # For audio playback support
+# Additional utilities
+python-dateutil>=2.8.0

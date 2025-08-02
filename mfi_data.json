@@ -1,0 +1,14 @@
+{
+  "Test MFI_NBFC": {
+    "name": "Test MFI",
+    "type": "NBFC",
+    "region": "Karnataka",
+    "contact_info": {
+      "address": "Test Address",
+      "phone": "08012345678",
+      "email": "test@mfi.com"
+    },
+    "created_at": "2025-08-02T21:53:39.562243",
+    "last_updated": "2025-08-02T21:53:39.562254"
+  }
+}
